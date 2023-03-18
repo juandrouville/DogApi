@@ -6,7 +6,7 @@ async function main(){
   try{ 
     server.listen(port);
     console.log('listen server port',port);
-    await sequelize.sync();
+    await sequelize.sync({force:false});
   } catch(e){
     console.log(e);
   };
