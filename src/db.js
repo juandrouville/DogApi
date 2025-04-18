@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import Sequelize from 'sequelize';
 
-const sequelize = 
+export const sequelize = 
  new Sequelize({
   dialect:'postgres',
   host:process.env.DB_HOST,
@@ -19,4 +19,4 @@ const sequelize =
   loggin:false,
 }); 
   
-export default sequelize;
+
