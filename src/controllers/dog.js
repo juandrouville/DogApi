@@ -19,10 +19,9 @@ export async function getAllDogs(req,res){
        try {
             var dogsAPI = (await axios.get(`${process.env.URL_DOGS}?key=${process.env.API_KEY}`)).data;
             var countDB = await Dog.count();
-            console.log(countDB);
-            console.log(dogsAPI.length);
+            console.log('countDB',countDB);
+            console.log('LENGTH DOGSapi',dogsAPI.length);
             if( countDB === 0) {
-                console.log('entro a allCreates');
                 await allCreate(dogsAPI);
             };
             

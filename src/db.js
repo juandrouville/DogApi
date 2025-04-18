@@ -9,14 +9,14 @@ export const sequelize =
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  port: process.nextTick.DB_PORT,
+  port: process.env.DB_PORT || 5432,
   dialectOptions:{
     ssl:{
       require: true,
       rejectUnauthorized: false,
     },
   },    
-  loggin:false,
+  logging:false,
 }); 
   
 

@@ -42,7 +42,7 @@ export async function allCreate(array){
                     {where:{
                         id:uuid(),
                         name:array[ele].name,
-                        image:array[ele].image.url,
+                        // image:array[ele].image.url,
                         life:array[ele].life_span,
                         weight_min:array[ele].weight.metric? selectMin(array[ele].weight.metric) : 0,
                         weight_max:array[ele].weight.metric? selectMax(array[ele].weight.metric) : 0,
