@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllDogs,getDogById,createDog,getOnlyCreate,getByPeso } from '../controllers/dog.js'
+import { getAllDogs,getDogById,createDog,getOnlyCreate,getByPeso,testApi } from '../controllers/dog.js'
 import { getAllTemperaments,getDogsByTemp } from '../controllers/temperament.js';
 const router = Router();
 

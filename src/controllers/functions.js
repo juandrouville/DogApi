@@ -1,73 +1,110 @@
+import { raw } from 'express';
 import { Dog } from '../models/Dog.js';
 import { Temperament } from '../models/Temperament.js';
 import { Op } from "sequelize";
-import { uuid } from 'uuidv4';
+import { v4 as uuidv4 } from 'uuid';
 
-export async function getQueryName(query){
+
+export async function getQueryName(query) {
+    console.log(query.name);
     var response = await Dog.findAll({
-        where:{
-            name:{
-                [Op.iLike]:`%${query}%`
+        where: {
+            name: {
+                [Op.iLike]: `%${query}%`
             },
         },
-        include:{
-            model:Temperament,
-            attributes:["id","name"],
+        include: {
+            model: Temperament,
+            attributes: ["id", "name"],
         },
-        attributes:{exclude : ["createdAt","updatedAt","dogApi"]},
+        attributes: { exclude: ["createdAt", "updatedAt", "dogApi"] },
     });
     return response;
 };
 
 
 
-function stringArray(string){
+function stringArray(string) {
     return string.split(',');
 };
 
-function selectMin (string){
+function selectMin(string) {
     var min = string.split('-');
-    return min[0]? parseInt(min[0]) : 0 ;
+    return min[0] && !isNaN(min[0]) ? parseInt(min[0]) : 0;
 };
 
-function selectMax (string){
+function selectMax(string) {
     var min = string.split('-');
-    return min[1]? parseInt(min[1]) : 0;
+    return min[1] && !isNaN(min[1]) ? parseInt(min[1]) : 0;
 };
 
-export async function allCreate(array){
-    try{
-        for ( var ele in array){
-            await Dog.findOrCreate(
-                    {where:{
-                        id:uuid(),
-                        name:array[ele].name,
-                        // image:array[ele].image.url,
-                        life:array[ele].life_span,
-                        weight_min:array[ele].weight.metric? selectMin(array[ele].weight.metric) : 0,
-                        weight_max:array[ele].weight.metric? selectMax(array[ele].weight.metric) : 0,
-                        height:array[ele].height.metric,
-                        dogApi:array[ele].temperament? stringArray(array[ele].temperament) : ['Empty'],
-                    },
+export async function allCreate(dogsArray) {
+    if (!Array.isArray(dogsArray) || dogsArray.length === 0) {
+        console.error('Invalid input: expected non-empty array');
+        return [];
+    }
+
+    try {
+        // Obter os nomes que ja existentes no banco
+        const existingDogs = await Dog.findAll({ attributes: ['name'], raw: true });
+        const existingNames = new Set(existingDogs.map(dog => dog.name.toLowerCase()));
+
+        // Filtrar apenas não existentes no banco
+
+        const dogsToCreate = dogsArray.filter(dog =>
+            !existingNames.has(dog.name.toLowerCase())
+        );
+
+        if (dogsToCreate.length === 0) {
+            console.log('nenhum cão novo a criar');
+            return [];
+        }
+
+        const createdDogs = [];
+
+        for (const dogData of dogsToCreate) {
+            try {
+                const dog = await Dog.create({
+                    id: uuidv4(),
+                    name: dogData.name,
+                    life: dogData.life_span || 'Unknown',
+                    weight_min: dogData.weight?.metric ? selectMin(dogData.weight.metric) : 0,
+                    weight_max: dogData.weight?.metric ? selectMax(dogData.weight.metric) : 0,
+                    height: dogData.height?.metric || 'Unknown',
+                    dogApi: dogData.temperament ? stringArray(dogData.temperament) : ['Empty'],
                 });
-            await setRelation(array[ele].name);
+                await setRelation(dog.name);
+                createdDogs.push(dog);
+            } catch (error) {
+                console.error(`Erro ao criar cão ${dogData.name}:`, error.message);
+            };
         };
-    } catch(error){return console.error(error)};
+        console.log(`Concluído! ${createdDogs.length} cães criados com sucesso`);
+        return createdDogs;
+    } catch (error) {
+        console.error('Erro crítico em allCreate:', error);
+        throw error;
+    }
 };
+    
+    
+        
 
-export async function setRelation(name){ 
-   try {
-       var dog = await Dog.findOne({
-           where:{
-               name:name,
-           },
-       });
-        for (var i in dog.dogApi){
-           await Temperament.findOrCreate({where:{name:dog.dogApi[i]}});
-           if(dog.dogApi[i] !== undefined || dog.dogApi[i] !== null){
-               var temperament = await Temperament.findOne({where:{name:dog.dogApi[i]}});
-               await temperament.addDogs(dog);
-           };
-       };
-   } catch (error){return console.error(error)};
+
+
+export async function setRelation(name) {
+    try {
+        var dog = await Dog.findOne({
+            where: {
+                name: name,
+            },
+        });
+        for (var i in dog.dogApi) {
+            await Temperament.findOrCreate({ where: { name: dog.dogApi[i] } });
+            if (dog.dogApi[i] !== undefined || dog.dogApi[i] !== null) {
+                var temperament = await Temperament.findOne({ where: { name: dog.dogApi[i] } });
+                await temperament.addDogs(dog);
+            };
+        };
+    } catch (error) { return console.error(error) };
 };               

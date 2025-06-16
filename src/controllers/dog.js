@@ -8,43 +8,54 @@ import { getQueryName, allCreate } from './functions.js';
 // -----------GETs-------------------------------
 // Get all Dogs and Get by query
 
-export async function getAllDogs(req,res){
-   var queryName = req.query.name;
-   var limit = 8;
-   var offset = 0;
-   var page = req.query.page? Number(req.query.page) : 0;
-   var order = req.query.order? req.query.order : 'ASC';
-   if(page > offset){ offset = limit * page };
-   if(!queryName){
-       try {
-            var dogsAPI = (await axios.get(`${process.env.URL_DOGS}?key=${process.env.API_KEY}`)).data;
-            var countDB = await Dog.count();
-            console.log('countDB',countDB);
-            console.log('LENGTH DOGSapi',dogsAPI.length);
-            if( countDB === 0) {
-                await allCreate(dogsAPI);
-            };
-            
-            var allDogs = await Dog.findAll({
-                limit:limit,
-                offset:offset,
-                order:[["name",order]],
-                attributes:{exclude : ["createdAt","updatedAt","dogApi"]},
-                include:{
-                    model:Temperament,
-                    attributes:['id','name'],
-                }
-            });
-            return res.json(allDogs);
-                
-        } catch(error){ console.error(error)};
+export async function getAllDogs(req, res) {
+  try {
+   
+    const { name: queryName, page = '0', order = 'ASC' } = req.query;
+    const parsedPage = Math.max(0, parseInt(page)) || 0;
+    const validOrders = ['ASC', 'DESC'];
+    const sanitizedOrder = validOrders.includes(order.toUpperCase()) ? order : 'ASC';
+
+    //Configuração de paginação
+    const limit = 8;
+    const offset = parsedPage * limit;
+
+    if (!queryName) {
+      // consulta API se necessário
+      const countDB = await Dog.count();
+      const dogsAPI = (await axios.get(`${process.env.URL_DOGS}?key=${process.env.API_KEY}`)).data;
+      console.log(`Dogs in base de dados ${countDB} e Api tem ${dogsAPI.length}`);
+      //Compara quantidades entre API e DB 
+      await allCreate(dogsAPI);
+    
+        
+    
+
+      // Consulta DB
+      const allDogs = await Dog.findAll({
+        limit,
+        offset,
+        order: [['name', sanitizedOrder]],
+        attributes: { exclude: ['createdAt', 'updatedAt', 'dogApi'] },
+        include: {
+          model: Temperament,
+          attributes: ['id', 'name'],
+          through: { attributes: [] } 
+        }
+      });
+
+      return res.json(allDogs);
     } else {
-        try{
-           var response = await getQueryName(queryName);
-           res.json(response);
-        } catch(error){ console.error(error)};
-    };
-};
+      const response = await getQueryName(queryName);
+      return res.json(response);
+    }
+  } catch (error) {
+    console.error('Error in getAllDogs:', error);
+    return res.status(500).json({ 
+      error: 'Internal server error',
+    });
+  }
+}
  
 // Get only dog by ID for params
                 
@@ -126,6 +137,20 @@ export async function createDog( req,res ){
         return res.json(dogFind);
     } catch(error){return res.send(error)}
 };
+
+export async function testApi(req, res) {
+  try {
+    const response = await axios.get(`${process.env.URL_DOGS}?key=${process.env.API_KEY}`);
+    console.log('Total de cães na API:', response.data.length);
+    return res.json({
+      totalDogs: response.data.length,
+      sample: response.data.slice(0, 5) // Mostra apenas 5 para inspeção
+    });
+  } catch (error) {
+    console.error('Erro ao testar API:', error);
+    return res.status(500).json({ error: 'Erro ao acessar API' });
+  }
+}
                 
             
         

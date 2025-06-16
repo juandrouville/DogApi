@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5432;
 
 async function initializeApp() {
   try {
