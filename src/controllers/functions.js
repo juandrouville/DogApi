@@ -2,7 +2,7 @@ import { raw } from 'express';
 import { Dog } from '../models/Dog.js';
 import { Temperament } from '../models/Temperament.js';
 import { Op } from "sequelize";
-import { v4 as uuidv4 } from 'uuid';
+
 
 
 export async function getQueryName(query) {
@@ -45,32 +45,19 @@ export async function allCreate(dogsArray) {
     }
 
     try {
-        // Obter os nomes que ja existentes no banco
-        const existingDogs = await Dog.findAll({ attributes: ['name'], raw: true });
-        const existingNames = new Set(existingDogs.map(dog => dog.name.toLowerCase()));
-
-        // Filtrar apenas não existentes no banco
-
-        const dogsToCreate = dogsArray.filter(dog =>
-            !existingNames.has(dog.name.toLowerCase())
-        );
-
-        if (dogsToCreate.length === 0) {
-            console.log('nenhum cão novo a criar');
-            return [];
-        }
 
         const createdDogs = [];
 
-        for (const dogData of dogsToCreate) {
+        for (const dogData of dogsArray) {
             try {
                 const dog = await Dog.create({
-                    id: uuidv4(),
+                    id: dogData.id,
                     name: dogData.name,
                     life: dogData.life_span || 'Unknown',
                     weight_min: dogData.weight?.metric ? selectMin(dogData.weight.metric) : 0,
                     weight_max: dogData.weight?.metric ? selectMax(dogData.weight.metric) : 0,
                     height: dogData.height?.metric || 'Unknown',
+                    image: `https://cdn2.thedogapi.com/images/${dogData.reference_image_id}_1280.jpg`,
                     dogApi: dogData.temperament ? stringArray(dogData.temperament) : ['Empty'],
                 });
                 await setRelation(dog.name);
@@ -86,9 +73,9 @@ export async function allCreate(dogsArray) {
         throw error;
     }
 };
-    
-    
-        
+
+
+
 
 
 

@@ -24,13 +24,10 @@ export async function getAllDogs(req, res) {
       // consulta API se necessário
       const countDB = await Dog.count();
       const dogsAPI = (await axios.get(`${process.env.URL_DOGS}?key=${process.env.API_KEY}`)).data;
+      
       console.log(`Dogs in base de dados ${countDB} e Api tem ${dogsAPI.length}`);
-      //Compara quantidades entre API e DB 
-      await allCreate(dogsAPI);
-    
-        
-    
-
+      //Compara quantidades entre API e DB > se for diferente cria os dog no DB
+      countDB !== dogsAPI.length && await allCreate(dogsAPI);
       // Consulta DB
       const allDogs = await Dog.findAll({
         limit,
@@ -43,8 +40,8 @@ export async function getAllDogs(req, res) {
           through: { attributes: [] } 
         }
       });
-
       return res.json(allDogs);
+      
     } else {
       const response = await getQueryName(queryName);
       return res.json(response);
@@ -54,8 +51,12 @@ export async function getAllDogs(req, res) {
     return res.status(500).json({ 
       error: 'Internal server error',
     });
-  }
-}
+  };
+};
+        
+    
+
+
  
 // Get only dog by ID for params
                 
@@ -126,7 +127,6 @@ export async function createDog( req,res ){
                 weight_max,
                 height,
                 life,
-                id:uuid()
         });
         
         for(var i in temperaments){

@@ -21,6 +21,7 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "pg": "^8.5.1",
+    "react-scripts": "^5.0.1",
     "sequelize": "^6.3.5",
     "uuid": "^11.1.0",
     "uuidv4": "^6.2.13"
