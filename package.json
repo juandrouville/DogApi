@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node ./index",
-    "test": "mocha -w ./tests/**/*.spec.js"
+    "test": "mocha -w ./tests/**/*.spec.js",
+    "vercel-build": "npm install && npm run build"
   },
   "author": "Henry",
   "license": "ISC",
