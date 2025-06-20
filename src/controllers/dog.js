@@ -1,7 +1,6 @@
 import { Dog } from'../models/Dog.js';
 import { Temperament } from '../models/Temperament.js';
 import axios from 'axios';
-import { uuid } from 'uuidv4';
 import { getQueryName, allCreate } from './functions.js';
 
 
