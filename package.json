@@ -23,6 +23,7 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "pg": "^8.16.2",
+    "postgres": "^3.4.7",
     "react-scripts": "^5.0.1",
     "sequelize": "^6.37.7",
     "uuid": "^11.1.0",
