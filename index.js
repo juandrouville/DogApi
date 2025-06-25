@@ -32,4 +32,4 @@ process.on('unhandledRejection', (err) => {
 });
 
 initializeApp();
-module.exports = server;
+export default server;

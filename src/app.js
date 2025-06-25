@@ -8,7 +8,7 @@ import routes from './routes/index.js';
 
 import'./db.js';
 
-export const server = express();
+const server = express();
 
 /* server.name = 'API'; */
 
@@ -55,4 +55,4 @@ export const initializeServer = async () => {
   }
 };
 
-module.exports = server;
+export default server;

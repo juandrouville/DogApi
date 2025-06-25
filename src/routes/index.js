@@ -12,4 +12,3 @@ router.get('/dogs/order/peso',getByPeso);
 router.post('/dogs',createDog);
 
 export default router;
-module.exports = router;
