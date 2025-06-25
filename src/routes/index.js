@@ -10,5 +10,8 @@ router.get('/dogs/get/created',getOnlyCreate);
 router.get('/temperaments',getAllTemperaments);
 router.get('/dogs/order/peso',getByPeso);
 router.post('/dogs',createDog);
+router.get('/test', (req, res) => {
+    res.json({ message: "Rota funcionando"})
+});
 
 export default router;
