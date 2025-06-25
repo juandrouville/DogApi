@@ -55,4 +55,4 @@ export const initializeServer = async () => {
   }
 };
 
-export default server;
+module.exports = server;
