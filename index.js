@@ -1,10 +1,13 @@
 import  server  from './src/app.js'
 import { sequelize } from './src/db.js';
 import dotenv from 'dotenv';
+import serverless from 'serverless-http';
 
 dotenv.config();
 
-const port = process.env.PORT || 5432;
+const port = process.env.PORT || 3000;
+
+const vercelHandler = serverless(server);
 
 async function initializeApp() {
   try {
@@ -15,10 +18,11 @@ async function initializeApp() {
     await sequelize.sync({ force: false });
     console.log('✅ Modelos sincronizados');
 
-    
-    server.listen(port, () => {
-      console.log(`🚀 Servidor rodando em http://localhost:${port}`);
-    });
+    if(process.env.VERCEL !== '1'){
+      server.listen(port, () => {
+        console.log(`🚀 Servidor rodando em http://localhost:${port}`);
+      });
+    }
 
   } catch (error) {
     console.error('❌ Falha na inicialização:', error);
@@ -32,4 +36,5 @@ process.on('unhandledRejection', (err) => {
 });
 
 initializeApp();
+export const handler = vercelHandler;
 export default server;
