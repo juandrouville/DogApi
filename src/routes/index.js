@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllDogs,getDogById,createDog,getOnlyCreate,getByPeso,testApi } from '../controllers/dog.js'
+import { getAllDogs,getDogById,createDog,getOnlyCreate,getByPeso } from '../controllers/dog.js'
 import { getAllTemperaments,getDogsByTemp } from '../controllers/temperament.js';
 const router = Router();
 
@@ -11,7 +11,7 @@ router.get('/temperaments',getAllTemperaments);
 router.get('/dogs/order/peso',getByPeso);
 router.post('/dogs',createDog);
 router.get('/test', (req, res) => {
-    res.json({ message: "Rota funcionando"})
+    return res.json({ message: "Rota funcionando"})
 });
 
 export default router;
