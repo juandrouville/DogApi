@@ -7,7 +7,9 @@ dotenv.config();
 
 const port = process.env.PORT || 3000;
 
-const vercelHandler = serverless(server);
+const vercelHandler = serverless(server,{
+  binary: ['image/*', 'application/json'] 
+});
 
 async function initializeApp() {
   try {
