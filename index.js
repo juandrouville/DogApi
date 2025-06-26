@@ -36,5 +36,5 @@ process.on('unhandledRejection', (err) => {
 });
 
 initializeApp();
-export const handler = vercelHandler;
+export {vercelHandler};
 export default server;
