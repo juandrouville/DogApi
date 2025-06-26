@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import { sequelize } from './db.js';
 
-import routes from './routes/index.js';
+import router from './routes/index.js';
 
 import'./db.js';
 
@@ -25,7 +25,7 @@ server.use((req, res, next) => {
   next();
 });
 
-server.use('/', routes);
+server.use('/', router);
 
 // Error catching endware.
 server.use((err, req, res, next) => {
