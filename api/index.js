@@ -16,9 +16,9 @@ async function initializeApp() {
     console.log('✅ Modelos sincronizados');
 
     
-    server.listen(port, () => {
-      console.log(`🚀 Servidor rodando em http://localhost:${port}`);
-    });
+    // server.listen(port, () => {
+    //   console.log(`🚀 Servidor rodando em http://localhost:${port}`);
+    // });
 
   } catch (error) {
     console.error('❌ Falha na inicialização:', error);
