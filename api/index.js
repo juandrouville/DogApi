@@ -1,5 +1,5 @@
-import  server  from './src/app.js';
-import { sequelize } from './src/db.js';
+import  server  from '../src/app.js'
+import { sequelize } from '../src/db.js';
 import dotenv from 'dotenv';
 
 dotenv.config();

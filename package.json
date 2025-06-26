@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node ./index",
+    "start": "node api/index.js",
     "test": "mocha -w ./tests/**/*.spec.js",
     "vercel-build": "npm install"
   },
