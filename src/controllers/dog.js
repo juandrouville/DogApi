@@ -92,7 +92,7 @@ export async function getOnlyCreate( req , res ){
 
 export async function getByPeso(req,res){
     try{
-        var limit = 8;
+        var limit = 12;
         var offset = 0;
         var page = req.query.page? Number(req.query.page) : 0;
         var order = req.query.order? req.query.order : 'ASC';
