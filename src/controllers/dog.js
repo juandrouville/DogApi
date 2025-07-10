@@ -16,7 +16,7 @@ export async function getAllDogs(req, res) {
     const sanitizedOrder = validOrders.includes(order.toUpperCase()) ? order : 'ASC';
 
     //Configuração de paginação
-    const limit = 8;
+    const limit = 12;
     const offset = parsedPage * limit;
 
     if (!queryName) {
