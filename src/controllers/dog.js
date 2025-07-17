@@ -9,15 +9,16 @@ import { getQueryName, allCreate } from './functions.js';
 
 export async function getAllDogs(req, res) {
   try {
-   
-    const { name: queryName, page = '0', order = 'ASC' } = req.query;
-    const parsedPage = Math.max(0, parseInt(page)) || 0;
+    
+    //  page = '0',
+    const { name: queryName, order = 'ASC' } = req.query;
+    // const parsedPage = Math.max(0, parseInt(page)) || 0;
     const validOrders = ['ASC', 'DESC'];
     const sanitizedOrder = validOrders.includes(order.toUpperCase()) ? order : 'ASC';
 
     //Configuração de paginação
-    const limit = 12;
-    const offset = parsedPage * limit;
+    // const limit = 12;
+    // const offset = parsedPage * limit;
 
     if (!queryName) {
       // consulta API se necessário
@@ -29,8 +30,8 @@ export async function getAllDogs(req, res) {
       countDB !== dogsAPI.length && await allCreate(dogsAPI);
       // Consulta DB
       const allDogs = await Dog.findAll({
-        limit,
-        offset,
+        // limit,
+        // offset,
         order: [['name', sanitizedOrder]],
         attributes: { exclude: ['createdAt', 'updatedAt', 'dogApi'] },
         include: {
@@ -92,15 +93,15 @@ export async function getOnlyCreate( req , res ){
 
 export async function getByPeso(req,res){
     try{
-        var limit = 12;
-        var offset = 0;
-        var page = req.query.page? Number(req.query.page) : 0;
+        // var limit = 12;
+        // var offset = 0;
+        // var page = req.query.page? Number(req.query.page) : 0;
         var order = req.query.order? req.query.order : 'ASC';
-        if(page > offset){ offset = limit * page };
+        // if(page > offset){ offset = limit * page };
         
         var dogsByPeso = await Dog.findAll({
-            limit:limit,
-            offset:offset,
+            // limit:limit,
+            // offset:offset,
             order:[["weight_min",order]],
             attributes:{exclude : ["createdAt","updatedAt","dogApi"]},
             include:{
